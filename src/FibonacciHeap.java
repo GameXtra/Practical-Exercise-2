@@ -359,6 +359,7 @@ public class FibonacciHeap {
      */
     
     private void cut(HeapNode node, HeapNode parentNode){
+    	TotalCuts ++;
     	removeNodeFromNodesList(node);
     	parentNode.rank --;
     	mergeNodesList(node, HeapNode_Min);
@@ -393,6 +394,7 @@ public class FibonacciHeap {
      * @pre - HeapNode node and node2 exists.
      * @post - nodes are now connected.
      */
+    
     public void mergeNodesList(HeapNode node, HeapNode node2){
     	// fixing pointers of the new siblings
     	HeapNode tempNode = node.nextNode;
@@ -410,6 +412,7 @@ public class FibonacciHeap {
      * @pre HeapNode node exists
      * @post HeapNode node is no longer linked to its siblings.
      */
+    
     public void removeNodeFromNodesList(HeapNode node){
     	// fixing pointers of siblings
     	HeapNode nodePrev = node.prevNode;
