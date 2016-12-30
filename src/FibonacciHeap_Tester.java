@@ -17,8 +17,12 @@ public class FibonacciHeap_Tester {
 		// TODO Auto-generated method stub//
 		testCase1();
 		
-		
-//		writeExcel();
+//		try {
+//			writeExcel();
+//		} catch (WriteException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	
@@ -27,7 +31,7 @@ public class FibonacciHeap_Tester {
 		FibonacciHeap.HeapNode [] nodes_array = new FibonacciHeap.HeapNode [6];
 		for(int i = 0; i < 6 ; i++){ 
 			nodes_array[i] = test_heap.insert(i+1);
-			System.out.println(String.format("Adding node with key %d",i));
+			System.out.println(String.format("Adding node with key %d",i+1));
 		}
 		if(test_heap.size() != 6){
 			System.out.println("Test case 1 - Error 1 : problem with tree size in insertion");
@@ -49,7 +53,7 @@ public class FibonacciHeap_Tester {
 					"Test case 1 - Error 5 : problem with deleteMin. Left child should be 4 but it is %s",
 					test_heap.findMin().child.key));
 		}
-		if(test_heap.findMin().child.child.key != 1){
+		if(test_heap.findMin().child.child.key != 5){
 			System.out.println(String.format(
 					"Test case 1 - Error 6 : problem with deleteMin. Left child child should be 5 but it is %s",
 					test_heap.findMin().child.child.key));
@@ -59,14 +63,10 @@ public class FibonacciHeap_Tester {
 					"Test case 1 - Error 7 : problem with deleteMin. Left child brother should be 3 but it is %s",
 					test_heap.findMin().child.nextNode.key));
 		}
-		if(test_heap.findMin().child.child.key != 1){
+
+		if(test_heap.totalCuts() != 0){
 			System.out.println(String.format(
-					"Test case 1 - Error 8 : problem with deleteMin. Left child child should be 5 but it is %s",
-					test_heap.findMin().child.child.key));
-		}
-		if(test_heap.totalCuts() != 1){
-			System.out.println(String.format(
-					"Test case 1 - Error 9 : problem with cuts counter. total cuts should be 1 but it is %s",
+					"Test case 1 - Error 9 : problem with cuts counter. total cuts should be 0 but it is %s",
 					test_heap.totalCuts()));
 		}
 		if(test_heap.totalLinks() != 3){
@@ -88,19 +88,20 @@ public class FibonacciHeap_Tester {
 		FibonacciHeap test_heap2 = new FibonacciHeap();
 		test_heap2.insert(1);
 		//melding... 
-		test_heap.meld(test_heap2);
-		if(test_heap.findMin().key != 1){
+		test_heap2.meld(test_heap);
+		if(test_heap2.findMin().key != 1){
 			System.out.println(String.format(
 					"Test case 1 - Error 13 : problem with meld. min key should be 1 but it is %s",
-					test_heap.findMin().key));
+					test_heap2.findMin().key));
 		}
-		if(test_heap.findMin().nextNode.key != 2){
+		if(test_heap2.findMin().nextNode.key != 2){
 			System.out.println(String.format(
 					"Test case 1 - Error 14 : problem with meld. Sibiling should be 2 but it is %s",
-					test_heap.findMin().nextNode.key));
+					test_heap2.findMin().nextNode.key));
 		}	
-		
-		
+		test_heap.delete(nodes_array[2]);
+		test_heap.delete(nodes_array[4]);
+		System.out.println("Test case 1 - Done! ");
 		
 	}
 	
@@ -135,7 +136,9 @@ public class FibonacciHeap_Tester {
 				sheet.addCell(headerCell5);
 				
 				long startTime = System.currentTimeMillis();
-				for(int i=1; i<3;i++){
+				for(int i=1; i<4;i++){
+					FibonacciHeap.TotalCuts = 0;
+					FibonacciHeap.TotalLinks = 0;
 					FibonacciHeap test_heap = new FibonacciHeap();
 					// insertion part
 					heapInsertor(test_heap, i*1000);
@@ -161,6 +164,7 @@ public class FibonacciHeap_Tester {
 				}
 				//write workbook
 				workBook.write();
+				workBook.close();
 			}
 
 		} catch (IOException e) {
@@ -171,7 +175,7 @@ public class FibonacciHeap_Tester {
 			e.printStackTrace();
 		} finally {
 			//close workbook
-			workBook.close();
+			
 		}
 	}
 	
@@ -182,7 +186,7 @@ public class FibonacciHeap_Tester {
 	}
 	
 	public static void heapDeletor(FibonacciHeap heap, int amount){
-		for(int i = amount; i<amount/2; i++){
+		for(int i = 0; i<amount/2; i++){
 			heap.deleteMin();
 		}
 	}

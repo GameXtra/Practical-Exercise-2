@@ -3,8 +3,8 @@
  * An implementation of fibonacci heap over non-negative integers.
  */
 public class FibonacciHeap {
-	static private int TotalLinks = 0;
-	static private int TotalCuts = 0;
+	static public int TotalLinks = 0;
+	static public int TotalCuts = 0;
 	public int NumberOfTrees = 0;
 	public int NumberOfMarkedNodes = 0;
 	private HeapNode HeapNode_Min;
@@ -30,16 +30,16 @@ public class FibonacciHeap {
     */
     public HeapNode insert(int key){
     	HeapNode heapNode = new HeapNode(key);
-    	size ++;
-    	NumberOfTrees ++;
     	if(empty()){
     		HeapNode_Min=heapNode;
     	}else{
-	    	mergeNodesList(HeapNode_Min, heapNode);
+	    	mergeNodesList(heapNode,HeapNode_Min);
 			if(HeapNode_Min.key > heapNode.key){//we have a new min
 				HeapNode_Min = heapNode;
 			}
     	}
+    	size ++;
+    	NumberOfTrees ++;
     	return heapNode;    		
     }
 
@@ -290,10 +290,17 @@ public class FibonacciHeap {
     	if(x.child != null){ //add children as trees
     		HeapNode firstNode= x.child ,tempNode= x.child;
     		do{ // make children parent pointer null;
+    			if(tempNode.isMarked){
+    				tempNode.isMarked = false;
+    				NumberOfMarkedNodes--;
+    			}
     			tempNode.parentNode = null;
     			tempNode = tempNode.nextNode;
     		}while(tempNode!=firstNode);
     		mergeNodesList(HeapNode_Min, x.child);
+    	}
+    	if(isMin){
+    		HeapNode_Min = HeapNode_Min.nextNode;
     	}
     	removeNodeFromNodesList(x);
     	if(x_parent!=null){
@@ -303,6 +310,7 @@ public class FibonacciHeap {
     	if(isMin){
     		consolidate(); // also find the new min.
     	}
+    	size --;
     }
    /**
     * public void decreaseKey(HeapNode x, int delta)
@@ -352,10 +360,13 @@ public class FibonacciHeap {
     	HeapNode parentNode = node.parentNode;
     	if(parentNode!= null){ // node isn't root
     		if(node.isMarked){
+    			node.isMarked = false;
+    			NumberOfMarkedNodes --;
     			cut(node);
     			cascadingCut(parentNode);
     		}else{
     			node.isMarked = true;
+    			NumberOfMarkedNodes ++;
     		}
     	}
     }
@@ -450,7 +461,7 @@ public class FibonacciHeap {
 		} //nothing to do.
     	HeapNode[] Heaps_Arr = 
     			new HeapNode[getMaxRank() + 
-    			             getBitLength(NumberOfTrees)];
+    			             getBitLength(NumberOfTrees)+1];
     						// if every tree is of rank max rank, and we combine them all, this is the max rank.
         int i=0;
     	HeapNode currentNode = HeapNode_Min, nextNode = HeapNode_Min.nextNode;
