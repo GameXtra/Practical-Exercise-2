@@ -1,4 +1,5 @@
 /**
+ * Ido Kessler , Shachar Hirshberg (311398499, 305624207)
  * FibonacciHeap
  * An implementation of fibonacci heap over non-negative integers.
  */
@@ -15,6 +16,7 @@ public class FibonacciHeap {
     * @complexity O(1).
     * @return true if and only if the heap is empty.
     * @pre none.
+    * @post none.
     */
     public boolean empty(){
     	return NumberOfTrees==0;
@@ -46,6 +48,9 @@ public class FibonacciHeap {
    /**
     * public void deleteMin()
     * Delete the node containing the minimum key.
+    * @dependencies - delete - Amortized O(log(n))
+    * @complexity - Amortized O(log(n))
+    * @post - tree is valid and doesn't contain the previous minNode
     */
     public void deleteMin()
     {
@@ -66,7 +71,7 @@ public class FibonacciHeap {
     
    /**
     * public void meld (FibonacciHeap heap2)
-    * Meld the heap with heap2 - make the two tree double link trees list connected.
+    * Meld the heap with heap2
     * @complexity O(1) - connect the ends of two double link lists.
     * @pre none.
     * @post the two heaps are now combined.
@@ -94,7 +99,7 @@ public class FibonacciHeap {
    /**
     * public int size()
     * Return the number of elements in the heap
-    * @complexity O(1) - return a value which update regularly.
+    * @complexity O(1) - return a value which updates regularly.
     * @pre none.
     * @return number of nodes in tree.
     */
@@ -249,8 +254,8 @@ public class FibonacciHeap {
     * public void delete(HeapNode x)
     * Deletes the node x from the heap.
     * @param - HeapNode x an HeapNode.
-    * @complexity -
-    * @dependencies - 
+    * @complexity - Amortized O(log(n))
+    * @dependencies - delete(HeapNode x, boolean isMin) - Amortized O(log(n))
     * @pre HeapNode x exists in heap.
     * @post HeapNode doesn't exist in the heap anymore and the heap is valid.
     */
@@ -268,8 +273,8 @@ public class FibonacciHeap {
      * Deletes the node x from the heap.
      * @param - HeapNode x an HeapNode.
      * @param - boolean isMin is this deleteMin.
-     * @complexity -
-     * @dependencies - 
+     * @complexity - Amortized O(log(n))
+     * @dependencies - mergeNodesList - O(1), removeNodeFromNodesList - O(1), cascadingCut - O(log(n)), consolidate - O(log(n))
      * @pre HeapNode x exists
      * @post HeapNode doesn't exist in the heap anymore and the heap is valid.
      */
@@ -316,7 +321,7 @@ public class FibonacciHeap {
     * public void decreaseKey(HeapNode x, int delta)
     * The function decreases the key of the node x by delta. The structure of the heap should be updated
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
-    * @dependencies cut - O(1) , cascadingCut - O(log(n)) ????
+    * @dependencies cut - O(1) , cascadingCut - O(log(n)) 
     * @complexity O(log(n))
     * @pre HeapNode x exists, delta >= 0.
     * @post the heap is now updated according to the new key.
@@ -350,8 +355,8 @@ public class FibonacciHeap {
     /**
      * public void cascadingCut(HeapNode node)
      * The function performs a cascading cut.
-     * @dependencies cut - O(1) , cascadingCut - O(log(n)) ????
-     * @complexity ??/ 
+     * @dependencies cut - O(1) , cascadingCut - O(log(n)) 
+     * @complexity - O(log(n))
      * @pre HeapNode node exists
      * @post cascading cut was performed, if needed.
      */
@@ -449,7 +454,7 @@ public class FibonacciHeap {
     /**
      * public void consolidate()
      * Combine every tree of the same size.
-     * @dependencies nodesArrayToHeap - O(n), getMaxRank - O(n).
+     * @dependencies nodesArrayToHeap - O(n), getMaxRank - O(n). getBigLength - O(1). mergeTree - O(1)
      * @complexity O(n) - worst case go over all 0-rank trees in the heap.
      * @pre NumberOfTrees is correct.
      * @post the heap now doesn't contain 2 tree of the same rank.
@@ -538,7 +543,7 @@ public class FibonacciHeap {
     	private int rank; // Number Of children.
     	
 	   /**
-	    * public HeapNode() 
+	    * public HeapNode(int k) 
 	    * Constructor for a HeapNode object.
 	    * @param k - key of the node.
 	    * @complexity O(1) 

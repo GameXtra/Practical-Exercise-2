@@ -16,7 +16,7 @@ public class FibonacciHeap_Tester {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub//
 		testCase1();
-		
+		testCase2();
 //		try {
 //			writeExcel();
 //		} catch (WriteException | IOException e) {
@@ -105,8 +105,6 @@ public class FibonacciHeap_Tester {
 		
 	}
 	
-	
-	
 	private static void writeExcel() throws WriteException, IOException {
 		WritableWorkbook workBook = null;
 		try {
@@ -188,6 +186,68 @@ public class FibonacciHeap_Tester {
 	public static void heapDeletor(FibonacciHeap heap, int amount){
 		for(int i = 0; i<amount/2; i++){
 			heap.deleteMin();
+		}
+	}
+	
+	private static void testCase2(){
+		FibonacciHeap test_heap = new FibonacciHeap();
+		FibonacciHeap.HeapNode [] nodes_array = new FibonacciHeap.HeapNode [17];
+		for(int i = 0; i < 17 ; i++){ 
+			nodes_array[i] = test_heap.insert(i+1);
+			//System.out.println(String.format("Adding node with key %d",i+1));
+		}
+		System.out.println("added 18 items");
+		printHeap(test_heap);
+		System.out.println("deleteMin");
+		test_heap.deleteMin();
+		printHeap(test_heap);
+		System.out.println("total links:" + FibonacciHeap.TotalLinks);
+		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("decreaseKey 17->2");
+		test_heap.decreaseKey(nodes_array[16], 15);
+		printHeap(test_heap);
+		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("decreaseKey 15->3");
+		test_heap.decreaseKey(nodes_array[14], 12);
+		printHeap(test_heap);
+		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("decreaseKey 11->4");
+		test_heap.decreaseKey(nodes_array[10], 7);
+		printHeap(test_heap);
+		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("decreaseKey 16->5");
+		test_heap.decreaseKey(nodes_array[15], 11);
+		printHeap(test_heap);
+		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		
+	}
+	
+	static void printHeap(FibonacciHeap heap){
+		if(heap==null || heap.empty()){return;}
+		FibonacciHeap.HeapNode tempNode = heap.findMin();
+		do{
+			printNode(tempNode,0,0);
+			System.out.format("%n");
+			tempNode = tempNode.nextNode;
+		}while(tempNode != heap.findMin());
+		
+	}
+	static void printNode(FibonacciHeap.HeapNode heapNode, int lastLevel, int level){
+		for(int i = lastLevel; i<level; i++){
+			System.out.print("	");
+		}
+		if(heapNode.isMarked){
+			System.out.print(".");
+		}
+		System.out.print(heapNode.key);
+		if(heapNode.child!=null){
+			printNode(heapNode.child.prevNode,level,level+1);
+			FibonacciHeap.HeapNode tempNode = heapNode.child.prevNode.prevNode, firstNode = heapNode.child.prevNode;
+			while(firstNode!=tempNode){
+				System.out.format("%n");
+				printNode(tempNode,0,level+1);
+				tempNode = tempNode.prevNode;
+			}
 		}
 	}
 }
