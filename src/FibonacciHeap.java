@@ -434,7 +434,6 @@ public class FibonacciHeap {
      * @pre none.
      * @post the node is no longer linked to its parent
      */
-    
     private void cut(HeapNode node, HeapNode parentNode){
     	removeNodeFromNodesList(node);
     	parentNode.rank --;
