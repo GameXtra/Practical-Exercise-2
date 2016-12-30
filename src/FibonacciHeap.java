@@ -34,22 +34,12 @@ public class FibonacciHeap {
     	NumberOfTrees ++;
     	if(empty()){
     		HeapNode_Min=heapNode;
-    	}else if(NumberOfTrees==1){
-    		heapNode.nextNode = HeapNode_Min;
-    		heapNode.prevNode = HeapNode_Min;
-    		HeapNode_Min.nextNode = heapNode;
-    		HeapNode_Min.prevNode = heapNode;
-    		
     	}else{
-    		heapNode.nextNode = HeapNode_Min;
-    		heapNode.prevNode = HeapNode_Min.prevNode;
-    		HeapNode_Min.prevNode.nextNode = heapNode;
-    		HeapNode_Min.prevNode = heapNode;
+	    	mergeNodesList(HeapNode_Min, heapNode);
+			if(HeapNode_Min.key > heapNode.key){
+				HeapNode_Min = heapNode;
+			}
     	}
-    	
-		if(HeapNode_Min.key > heapNode.key){
-			HeapNode_Min = heapNode;
-		}
     	return heapNode;    		
     }
 
@@ -60,12 +50,20 @@ public class FibonacciHeap {
     */
     public void deleteMin()
     {
-    	if(empty()){
-    		return; //nothing to do.
+    	if(empty()){ //nothing to do.
+    		return;
     	}
+    	if(size == 1){ // just delete tree
+    		HeapNode_Min = null;
+    		NumberOfMarkedNodes = 0;
+    		NumberOfTrees = 0;
+    		return;
+    	}
+    	
     	if(HeapNode_Min.isMarked){
     		NumberOfMarkedNodes -= 1;
     	}
+    	
 		HeapNode firstNode ,tempNode;
     	if(NumberOfTrees == 1){
     		if(HeapNode_Min.rank == 0){ // no children, nothing to do.
@@ -437,7 +435,6 @@ public class FibonacciHeap {
     private void cut(HeapNode node, HeapNode parentNode){
     	TotalCuts ++;
     	removeNodeFromNodesList(node);
-    	parentNode.rank --;
     	mergeNodesList(node, HeapNode_Min);
     }
     
@@ -473,29 +470,31 @@ public class FibonacciHeap {
     
     public void mergeNodesList(HeapNode node, HeapNode node2){
     	// fixing pointers of the new siblings
-    	HeapNode tempNode = node.nextNode;
-    	node.nextNode = node2.nextNode;
-    	node.nextNode.prevNode = node;
-    	node2.nextNode = tempNode;
-    	node2.nextNode.prevNode = node2;
+    	node2.prevNode.nextNode = node.nextNode;
+    	node.nextNode.prevNode = node2.prevNode;
+    	node.nextNode = node2;
+    	node2.prevNode = node;
     }
     
     /**
      * public void removeNodeFromNodesList(HeapNode node)
-     * The function removes the node from siblings linked list.
+     * The function removes the node from siblings linked list and from parent.
      * @dependencies 
      * @complexity - O(1)
      * @pre HeapNode node exists
-     * @post HeapNode node is no longer linked to its siblings.
+     * @post HeapNode node is no longer linked to its siblings and parent.
      */
-    
     public void removeNodeFromNodesList(HeapNode node){
+    	if(node.parentNode!= null){
+    		node.parentNode.rank -= 1;
+    		if(node.parentNode.child == node){
+    			node.parentNode.child = node.nextNode;
+    		}
+    	}
     	// fixing pointers of siblings
-    	HeapNode nodePrev = node.prevNode;
-    	HeapNode nodeNext = node.nextNode;
-    	nodePrev.nextNode = nodeNext;
-    	nodeNext.prevNode = nodePrev;
-		// link the node to itself
+    	node.nextNode.prevNode = node.prevNode;
+    	node.prevNode.nextNode = node.nextNode;
+    	// link the node to itself
     	node.nextNode = node;
     	node.prevNode = node;
     }
@@ -588,8 +587,8 @@ public class FibonacciHeap {
     public class HeapNode{
     	public int key;
     	public boolean isMarked = false;
-    	public HeapNode nextNode = null;
-    	public HeapNode prevNode = null;
+    	public HeapNode nextNode = this;
+    	public HeapNode prevNode = this;
     	public HeapNode parentNode = null;
     	public HeapNode child = null;
     	private int rank = 0; // Number Of children.
