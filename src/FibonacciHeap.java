@@ -67,7 +67,8 @@ public class FibonacciHeap {
    /**
     * public HeapNode findMin()
     * @return the node of the heap whose key is minimal. 
-    * @complecity O(1) - 
+    * @complexity O(1)
+    * @pre - min exists 
     */
     public HeapNode findMin()
     {
@@ -157,17 +158,19 @@ public class FibonacciHeap {
     */
     public int[] countersRep()
     {
-    	if(empty()){return new int[0];}
+    	if(empty()){
+    		return new int[0];
+		}
     	int[] arr = new int[getMaxRank() + 1];
     	
-    	arr[HeapNode_Min.rank]=1;
-    	if(NumberOfTrees==1){
+    	arr[HeapNode_Min.rank]=1; 
+    	if(NumberOfTrees==1){ // arr would contains zeros except for the rank of the tree of the min node
     		return arr;
     	}
     	
     	HeapNode TempNode = HeapNode_Min.nextNode;
-    	while(TempNode!= HeapNode_Min){
-        	arr[TempNode.rank] += 1;
+    	while(TempNode!= HeapNode_Min){ // looping over all of the trees until we return to the min node.
+        	arr[TempNode.rank] += 1; // updating ranks
         	TempNode = TempNode.nextNode;
     	}
     	return arr;
@@ -180,7 +183,9 @@ public class FibonacciHeap {
     * @complexity O(n) - worst case run over all 0-rank tree nodes in the heap.
     */
     private int getMaxRank(){
-    	if(NumberOfTrees==1){ return HeapNode_Min.rank;}
+    	if(NumberOfTrees==1){ 
+    		return HeapNode_Min.rank;
+		}
     	int max=0;
     	HeapNode temp_heap = HeapNode_Min.nextNode;
     	while(temp_heap!= HeapNode_Min){
@@ -308,10 +313,15 @@ public class FibonacciHeap {
    /**
     * public void delete(HeapNode x)
     * Deletes the node x from the heap. 
-    *
+    * @param - HeapNode x an HeapNode.
+    * @complexity -
+    * @dependencies - 
+    * @pre HeapNode x exists
+    * @post HeapNode doesn't exist in the heap anymore and the heap is valid.
     */
     public void delete(HeapNode x) 
     {    
+    	
     	return; // should be replaced by student code
     }
 
@@ -391,10 +401,25 @@ public class FibonacciHeap {
     	public HeapNode child = null;
     	private int rank = 0; // Number Of children.
     	
+	   /**
+	    * public HeapNode() 
+	    * Constructor for a HeapNode object.
+	    * @param k - key of the node.
+	    * @complexity O(1) 
+	    * @pre none.
+	    */
     	public HeapNode(int k){
     		key=k;
     	}
     	
+ 	   /**
+ 	    * public void addChild(HeapNode newChild)
+ 	    * Adds a new child for an HeapNode object.
+ 	    * @param HeapNode newChild - the new child.
+ 	    * @complexity O(1) 
+ 	    * @pre none.
+ 	    * @post the new child is added now to the father node.
+ 	    */
     	public void addChild(HeapNode newChild){
     		TotalLinks++;
     		rank++;
@@ -415,7 +440,16 @@ public class FibonacciHeap {
     		}
     		child = newChild;
     	}
-    	    	
+	    
+  	   /**
+  	    * public void cutOff()
+  	    * TODO - delete?
+  	    * Adds a new child for an HeapNode object.
+  	    * @param HeapNode newChild - the new child.
+  	    * @complexity O(1) 
+  	    * @pre none.
+  	    * @post the new child is added now to the father node.
+  	    */
     	public void cutOff(){
     		if(parentNode != null){
     			parentNode.rank--;
