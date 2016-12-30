@@ -348,6 +348,10 @@ public class FibonacciHeap {
      * @post the node is no longer linked to its parent
      */
     private void cut(HeapNode node){
+    	if(node.isMarked ){
+    		node.isMarked = false;
+    		NumberOfMarkedNodes-= 1;
+    	}
     	removeNodeFromNodesList(node);
     	mergeNodesList(node, HeapNode_Min);
     }
@@ -540,7 +544,7 @@ public class FibonacciHeap {
     	public HeapNode prevNode;
     	public HeapNode parentNode;
     	public HeapNode child;
-    	private int rank; // Number Of children.
+    	public int rank; // Number Of children.
     	
 	   /**
 	    * public HeapNode(int k) 

@@ -17,12 +17,12 @@ public class FibonacciHeap_Tester {
 		// TODO Auto-generated method stub//
 		testCase1();
 		testCase2();
-//		try {
-//			writeExcel();
-//		} catch (WriteException | IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			writeExcel();
+		} catch (WriteException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -133,25 +133,29 @@ public class FibonacciHeap_Tester {
 				sheet.addCell(headerCell4);
 				sheet.addCell(headerCell5);
 				
-				long startTime = System.currentTimeMillis();
-				for(int i=1; i<4;i++){
+				int repeat = 1000;
+				FibonacciHeap test_heap = new FibonacciHeap();
+				for(int i=1; i<3;i++){
 					FibonacciHeap.TotalCuts = 0;
 					FibonacciHeap.TotalLinks = 0;
-					FibonacciHeap test_heap = new FibonacciHeap();
-					// insertion part
-					heapInsertor(test_heap, i*1000);
-					if (j == 2){ // second measurements
-						heapDeletor(test_heap, i*1000);
+					long startTime = System.currentTimeMillis();
+					for(int repeatCounter = 0; repeatCounter<repeat;repeatCounter++){
+						test_heap = new FibonacciHeap();
+						// insertion part
+						heapInsertor(test_heap, i*1000);
+						if (j == 2){ // second measurements
+							heapDeletor(test_heap, i*1000);
+						}
 					}
-					int totalLinks = test_heap.totalLinks();
-					int totalCuts = test_heap.totalCuts();
-					int potential = test_heap.potential();
 					long stopTime = System.currentTimeMillis();
-					long runTime = stopTime - startTime;
+					double totalLinks = (double)test_heap.totalLinks()/repeat;
+					double totalCuts = (double)test_heap.totalCuts()/repeat;
+					int potential = test_heap.potential();
+					double runTime = (double)(stopTime - startTime)/repeat;
 					Label m = new Label(0, i, String.format("%s",i*1000));
-					Label xl_runTime = new Label(1, i,String.format("%s", runTime));
-					Label xl_totalLinks = new Label(2, i,String.format("%s",totalLinks));
-					Label xl_totalCuts = new Label(3, i,String.format("%s",totalCuts));
+					Label xl_runTime = new Label(1, i, Double.toString(runTime));
+					Label xl_totalLinks = new Label(2, i,Double.toString(totalLinks));
+					Label xl_totalCuts = new Label(3, i,Double.toString(totalCuts));
 					Label xl_potential = new Label(4, i, String.format("%s",potential));
 
 					sheet.addCell(m);
@@ -203,22 +207,27 @@ public class FibonacciHeap_Tester {
 		printHeap(test_heap);
 		System.out.println("total links:" + FibonacciHeap.TotalLinks);
 		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("number of marked:" + test_heap.NumberOfMarkedNodes);
 		System.out.println("decreaseKey 17->2");
 		test_heap.decreaseKey(nodes_array[16], 15);
 		printHeap(test_heap);
 		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("number of marked:" + test_heap.NumberOfMarkedNodes);
 		System.out.println("decreaseKey 15->3");
 		test_heap.decreaseKey(nodes_array[14], 12);
 		printHeap(test_heap);
 		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("number of marked:" + test_heap.NumberOfMarkedNodes);
 		System.out.println("decreaseKey 11->4");
 		test_heap.decreaseKey(nodes_array[10], 7);
 		printHeap(test_heap);
 		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("number of marked:" + test_heap.NumberOfMarkedNodes);
 		System.out.println("decreaseKey 16->5");
 		test_heap.decreaseKey(nodes_array[15], 11);
 		printHeap(test_heap);
 		System.out.println("total cuts:" + FibonacciHeap.TotalCuts);
+		System.out.println("number of marked:" + test_heap.NumberOfMarkedNodes);
 		
 	}
 	
