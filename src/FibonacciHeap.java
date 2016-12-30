@@ -329,13 +329,96 @@ public class FibonacciHeap {
 
    /**
     * public void decreaseKey(HeapNode x, int delta)
-    *
     * The function decreases the key of the node x by delta. The structure of the heap should be updated
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
+    * @dependencies cut - O(1) , cascadingCut - O(log(n)) ????
+    * @complexity O(log(n))
+    * @pre HeapNode x exists
+    * @post the heap is now updated according to the new key.
     */
     public void decreaseKey(HeapNode x, int delta)
     {    
-    	return; // should be replaced by student code
+    	x.key -= delta;
+    	HeapNode parentNode = x.parentNode;
+    	if (parentNode != null && x.key < parentNode.key){ // x isn't root and key became smaller the parent's key 
+			cut(x, parentNode);
+			cascadingCut(parentNode);
+    	}
+		if(x.key < HeapNode_Min.key){ // x is now the min node.
+			HeapNode_Min = x;
+		}
+    }
+    
+    /**
+     * public void cut(HeapNode node, HeapNode parentNode)
+     * The function cuts the node node from its location.
+     * @dependencies removeNodeFromNodesList - O(1), mergeNodesList - O(1)
+     * @complexity O(1) 
+     * @pre none.
+     * @post the node is no longer linked to its parent
+     */
+    
+    private void cut(HeapNode node, HeapNode parentNode){
+    	removeNodeFromNodesList(node);
+    	parentNode.rank --;
+    	mergeNodesList(node, HeapNode_Min);
+    }
+    
+    /**
+     * public void cascadingCut(HeapNode node)
+     * The function performs a cascading cut.
+     * @dependencies cut - O(1) , cascadingCut - O(log(n)) ????
+     * @complexity ??/ 
+     * @pre HeapNode node exists
+     * @post cascading cut was performed, if needed.
+     */
+    
+    private void cascadingCut(HeapNode node){
+    	HeapNode parentNode = node.parentNode;
+    	if(parentNode!= null){ // node isn't root
+    		if(node.isMarked){
+    			cut(node, parentNode);
+    			cascadingCut(parentNode);
+    		}else{
+    			node.isMarked = true;
+    		}
+    	}
+    }
+    
+    /**
+     * public void mergeNodesList(HeapNode node, HeapNode node2)
+     * The function links the node node to another node, node2.
+     * @dependencies - none
+     * @complexity - O(1)
+     * @pre - HeapNode node and node2 exists.
+     * @post - nodes are now connected.
+     */
+    public void mergeNodesList(HeapNode node, HeapNode node2){
+    	// fixing pointers of the new siblings
+    	HeapNode tempNode = node.nextNode;
+    	node.nextNode = node2.nextNode;
+    	node.nextNode.prevNode = node;
+    	node2.nextNode = tempNode;
+    	node2.nextNode.prevNode = node2;
+    }
+    
+    /**
+     * public void removeNodeFromNodesList(HeapNode node)
+     * The function removes the node from siblings linked list.
+     * @dependencies 
+     * @complexity - O(1)
+     * @pre HeapNode node exists
+     * @post HeapNode node is no longer linked to its siblings.
+     */
+    public void removeNodeFromNodesList(HeapNode node){
+    	// fixing pointers of siblings
+    	HeapNode nodePrev = node.prevNode;
+    	HeapNode nodeNext = node.nextNode;
+    	nodePrev.nextNode = nodeNext;
+    	nodeNext.prevNode = nodePrev;
+		// link the node to itself
+    	node.nextNode = node;
+    	node.prevNode = node;
     }
     
     /**
@@ -348,7 +431,9 @@ public class FibonacciHeap {
      */    
     public void consolidate()
     {    
-    	if(NumberOfTrees < 2){return;} //nothing to do.
+    	if(NumberOfTrees < 2){
+    		return;
+		} //nothing to do.
     	HeapNode[] Heaps_Arr = 
     			new HeapNode[getMaxRank() + 
     			             getBitLength(NumberOfTrees)];
