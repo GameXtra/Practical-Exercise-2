@@ -2,8 +2,7 @@
  * FibonacciHeap
  * An implementation of fibonacci heap over non-negative integers.
  */
-public class FibonacciHeap
-{
+public class FibonacciHeap {
 	static private int TotalLinks = 0;
 	static private int TotalCuts = 0;
 	public int NumberOfTrees = 0;
@@ -17,8 +16,7 @@ public class FibonacciHeap
     * @return true if and only if the heap is empty.
     * @pre none.
     */
-    public boolean empty()
-    {
+    public boolean empty(){
     	return NumberOfTrees==0;
     }
 		
@@ -64,14 +62,12 @@ public class FibonacciHeap
     public void deleteMin()
     {
      	return; // should be replaced by student code
-     	
     }
 
    /**
     * public HeapNode findMin()
-    *
-    * Return the node of the heap whose key is minimal. 
-    *
+    * @return the node of the heap whose key is minimal. 
+    * @complecity O(1) - 
     */
     public HeapNode findMin()
     {
@@ -378,7 +374,7 @@ public class FibonacciHeap
     */
     public class HeapNode{
     	public int key;
-    	public boolean isMarked=false;
+    	public boolean isMarked = false;
     	public HeapNode nextNode = null;
     	public HeapNode prevNode = null;
     	public HeapNode parentNode = null;
@@ -411,11 +407,9 @@ public class FibonacciHeap
     	}
     	    	
     	public void cutOff(){
-    		if(parentNode != null){
-    			parentNode.rank--;
-    			if(parentNode.child == this){
-    				parentNode.child = parentNode = this.nextNode;
-    			}
+    		if(parentNode != null && parentNode.child == this){
+				parentNode.rank--;
+				parentNode.child = nextNode;
     		}
     		if(nextNode != null){
     			if(nextNode == prevNode){
