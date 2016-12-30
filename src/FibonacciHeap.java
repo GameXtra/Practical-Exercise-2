@@ -394,9 +394,8 @@ public class FibonacciHeap
     		rank++;
     		newChild.parentNode = this;
     		if(child == null){
-    			child = newChild;
-    			child.nextNode = null;
-    			child.prevNode = null;
+    			newChild.nextNode = null;
+    			newChild.prevNode = null;
     		}else if(child.nextNode==null){
     			newChild.prevNode = child;
     			newChild.nextNode = child;
@@ -408,6 +407,7 @@ public class FibonacciHeap
     			child.prevNode.nextNode = newChild;
     			child.prevNode = newChild;
     		}
+    		child = newChild;
     	}
     	    	
     	public void cutOff(){
