@@ -325,7 +325,17 @@ public class FibonacciHeap {
     {    
     	return; // should be replaced by student code
     }
-
+    
+    /**
+     * public void consolidate()
+     * Combine every 
+     */    
+    public void consolidate()
+    {    
+    	return; // should be replaced by student code
+    }
+    
+    
    /**
     * public int potential() 
     * The potential equals to the number of trees in the heap plus twice the number of marked nodes in the heap. 
@@ -407,9 +417,11 @@ public class FibonacciHeap {
     	}
     	    	
     	public void cutOff(){
-    		if(parentNode != null && parentNode.child == this){
-				parentNode.rank--;
-				parentNode.child = nextNode;
+    		if(parentNode != null){
+    			parentNode.rank--;
+    			if(parentNode.child == this){
+					parentNode.child = nextNode;
+    			}
     		}
     		if(nextNode != null){
     			if(nextNode == prevNode){
