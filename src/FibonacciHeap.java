@@ -178,7 +178,7 @@ public class FibonacciHeap {
     
     /**
     * private int getMaxRank()
-    * Return the maximum rank in heap. 
+    * @return the maximum rank in heap. 
     * @pre heap is not empty.
     * @complexity O(n) - worst case run over all 0-rank tree nodes in the heap.
     */
@@ -215,6 +215,7 @@ public class FibonacciHeap {
     	}
     	
 		size = array.length;
+    	NumberOfMarkedNodes = 0;
     	nodesArrayToHeap(
     			arrayToBinomialHeap(array)
     				);
@@ -258,7 +259,6 @@ public class FibonacciHeap {
     private void nodesArrayToHeap(HeapNode[] Heaps_Arr){    	
         int i = 0;
         NumberOfTrees = 0;
-    	NumberOfMarkedNodes = 0;
         while(Heaps_Arr[i] == null){ 			// find first node.
         	i++;
         	if(i == Heaps_Arr.length){return;}
@@ -321,7 +321,9 @@ public class FibonacciHeap {
     */
     public void delete(HeapNode x) 
     {    
-    	
+    	if(x==HeapNode_Min){
+    		deleteMin();
+    		return;} //Just do deleteMin. same action.
     	return; // should be replaced by student code
     }
 
@@ -338,11 +340,38 @@ public class FibonacciHeap {
     
     /**
      * public void consolidate()
-     * Combine every 
+     * Combine every tree of the same size.
+     * @dependencies nodesArrayToHeap - O(n), getMaxRank - O(n).
+     * @complexity O(n) - worst case go over all 0-rank trees in the heap.
+     * @pre none.
+     * @post the heap now doesn't contain 2 tree of the same rank.
      */    
     public void consolidate()
     {    
-    	return; // should be replaced by student code
+    	if(NumberOfTrees < 2){return;} //nothing to do.
+    	HeapNode[] Heaps_Arr = 
+    			new HeapNode[getMaxRank() + 
+    			             getBitLength(NumberOfTrees)];
+    						// if every tree is of rank max rank, and we combine them all, this is the max rank.
+        HeapNode currentNode = HeapNode_Min, nextNode = HeapNode_Min.nextNode;
+        int tempRank;
+        do{
+        	tempRank = currentNode.rank;
+        	while (Heaps_Arr[tempRank] != null){
+        		if(currentNode.key<=Heaps_Arr[tempRank].key){
+        			currentNode.addChild(Heaps_Arr[tempRank]);
+        		}else{
+        			Heaps_Arr[tempRank].addChild(currentNode);
+        			currentNode = Heaps_Arr[tempRank];
+        		}
+        		Heaps_Arr[tempRank] = null;
+        		tempRank++;
+        	}
+        	Heaps_Arr[tempRank] = currentNode;
+        	currentNode = nextNode;
+        	nextNode = nextNode.nextNode;
+        }while(currentNode!=HeapNode_Min);
+    	nodesArrayToHeap(Heaps_Arr);
     }
     
     
