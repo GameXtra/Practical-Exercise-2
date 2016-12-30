@@ -34,7 +34,6 @@ public class FibonacciHeap {
     	NumberOfTrees ++;
     	if(empty()){
     		HeapNode_Min=heapNode;
-    		
     	}else if(NumberOfTrees==1){
     		heapNode.nextNode = HeapNode_Min;
     		heapNode.prevNode = HeapNode_Min;
@@ -61,9 +60,87 @@ public class FibonacciHeap {
     */
     public void deleteMin()
     {
-     	return; // should be replaced by student code
+    	if(empty()){
+    		return; //nothing to do.
+    	}
+    	if(HeapNode_Min.isMarked){
+    		NumberOfMarkedNodes -= 1;
+    	}
+		HeapNode firstNode ,tempNode;
+    	if(NumberOfTrees == 1){
+    		if(HeapNode_Min.rank == 0){ // no children, nothing to do.
+    			NumberOfTrees = 0;
+    			HeapNode_Min = null;
+    			return;
+    		}else if(HeapNode_Min.rank == 1){ // replace with child.
+    			HeapNode_Min = HeapNode_Min.child;
+    			HeapNode_Min.parentNode = null;
+    			return;
+    		}else{ //add children instead.
+    			NumberOfTrees = HeapNode_Min.rank;
+    			HeapNode_Min = HeapNode_Min.child;
+    			firstNode = HeapNode_Min;
+    			tempNode = HeapNode_Min;
+    			do{
+    				tempNode.parentNode = null;
+    				if(tempNode.key<HeapNode_Min.key){
+    					HeapNode_Min = tempNode;
+    				}
+    				tempNode = tempNode.nextNode;
+    			}while(tempNode!=firstNode);
+    			consolidate();
+    			return;
+    		}
+    	}else{
+    		if(HeapNode_Min.rank == 0){ // no children, just delete it.
+    			if(NumberOfTrees == 2){
+    				HeapNode_Min = HeapNode_Min.nextNode;
+    				HeapNode_Min.nextNode = null;
+    				HeapNode_Min.prevNode = null;
+    				NumberOfTrees = 1;
+    				return;
+    			}else{
+    				HeapNode_Min.nextNode.prevNode = HeapNode_Min.prevNode;
+    				HeapNode_Min.prevNode.nextNode = HeapNode_Min.nextNode;
+    				HeapNode_Min = HeapNode_Min.nextNode;
+    				NumberOfTrees -= 1;
+    			}
+    		}else if(HeapNode_Min.rank == 1){ // add child instead.
+    			HeapNode_Min.nextNode.prevNode = HeapNode_Min.child;
+    			HeapNode_Min.prevNode.nextNode = HeapNode_Min.child;
+    			HeapNode_Min.child.nextNode = HeapNode_Min.nextNode;
+    			HeapNode_Min.child.prevNode = HeapNode_Min.prevNode;
+    			HeapNode_Min = HeapNode_Min.child;
+    			HeapNode_Min.parentNode = null;
+    		}else{ //add children instead.
+    			firstNode = HeapNode_Min.child;
+    			tempNode = HeapNode_Min.child;
+    			NumberOfTrees += HeapNode_Min.rank - 1;
+    			do{ // delete parent pointers.
+    				tempNode.parentNode = null;
+    				tempNode = tempNode.nextNode;
+    			}while(tempNode!=firstNode);
+    			HeapNode_Min.prevNode.nextNode = HeapNode_Min.child;
+    			HeapNode_Min.nextNode.prevNode = HeapNode_Min.child.prevNode;
+    			HeapNode_Min.child.prevNode = HeapNode_Min.prevNode;
+    			HeapNode_Min.child.prevNode.nextNode = HeapNode_Min.nextNode;
+    			HeapNode_Min = HeapNode_Min.child;
+    		}
+    		consolidate();
+    		firstNode = HeapNode_Min;
+    		tempNode = HeapNode_Min;
+    		do{ // find new min;
+    			if(tempNode.key<HeapNode_Min.key){
+    				HeapNode_Min = tempNode;
+    			}
+    			tempNode = tempNode.nextNode;
+    		}while(tempNode!=HeapNode_Min);
+    	}
+     	if(NumberOfTrees==0){
+     		HeapNode_Min=null;
+     		return; //nothing to do now.
+     	}
     }
-
    /**
     * public HeapNode findMin()
     * @return the node of the heap whose key is minimal. 
